@@ -20,7 +20,7 @@ const team: Member[] = [
     hook: "Distribution & monetization",
     description: "Drives partnerships and monetization at scale.",
     credibility: "25+ years closing global partnerships",
-    image: "/team/asi.jpg",
+    image: "/anothermee-pitch/team/asi.jpg",
   },
   {
     name: "Dvir Pinchevsky",
@@ -28,7 +28,7 @@ const team: Member[] = [
     hook: "Conversation intelligence",
     description: "Builds high-conversion conversation intelligence.",
     credibility: "Stress-tested 20+ LLMs for conversion",
-    image: "/team/dvir.jpg",
+    image: "/anothermee-pitch/team/dvir.jpg",
     highlighted: true,
   },
   {
@@ -37,7 +37,7 @@ const team: Member[] = [
     hook: "Scalable infrastructure",
     description: "Architects scalable multi-platform systems.",
     credibility: "Built for real-time multi-channel systems",
-    image: "/team/nir.jpg",
+    image: "/anothermee-pitch/team/nir.jpg",
   },
   {
     name: "Sefi Sasson",
@@ -45,7 +45,7 @@ const team: Member[] = [
     hook: "Revenue flow design",
     description: "Designs flows that turn interaction into revenue.",
     credibility: "From first message to closed deal",
-    image: "/team/sefi.jpg",
+    image: "/anothermee-pitch/team/sefi.jpg",
   },
   {
     name: "Liran Miller",
@@ -53,7 +53,7 @@ const team: Member[] = [
     hook: "Live operator systems",
     description: "Turns AI systems into live revenue engines.",
     credibility: "Operating real revenue systems in production",
-    image: "/team/liran.jpg",
+    image: "/anothermee-pitch/team/liran.jpg",
     highlighted: true,
   },
 ];

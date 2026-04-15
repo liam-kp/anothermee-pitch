@@ -58,7 +58,7 @@ export default function HeroHook() {
             className="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgb(191_162_90/0.1),transparent_70%)] blur-3xl"
           />
           <Image
-            src="/team/AnotherMee_Image.png"
+            src="/anothermee-pitch/team/AnotherMee_Image.png"
             alt="AnotherMee"
             width={1024}
             height={1024}

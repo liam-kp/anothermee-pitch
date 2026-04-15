@@ -290,7 +290,7 @@ export default function LiveDemo() {
           </span>
           <div className="relative w-full max-w-[900px] overflow-hidden rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/10 drop-shadow-[0_0_60px_rgb(34_197_94/0.12)] sm:w-[92%]">
             <Image
-              src="/team/SALEDASH.jpeg"
+              src="/anothermee-pitch/team/SALEDASH.jpeg"
               alt="AnotherMee live revenue dashboard"
               width={1800}
               height={1100}
