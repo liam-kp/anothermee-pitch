@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -11,27 +10,32 @@ type ChatMsg = {
   cta?: boolean;
 };
 
+// Neutral flow — no niche language.
+// Arc: conversation → decision → unlock → payment.
 const script: ChatMsg[] = [
-  { from: "user", text: "hey", time: "23:47" },
-  { from: "ai", text: "You disappeared on me yesterday 🙂", time: "23:47" },
-  { from: "user", text: "haha yeah", time: "23:48" },
+  { from: "user", text: "hey, I'm back", time: "14:22" },
+  { from: "ai", text: "Welcome back 👋", time: "14:22" },
   {
     from: "ai",
-    text: "I saved something for you actually…",
-    time: "23:48",
+    text: "Last time you were looking at the growth bundle — want me to pull it up?",
+    time: "14:22",
   },
-  { from: "ai", text: "thought you'd like it", time: "23:48" },
-  { from: "user", text: "what is it", time: "23:49" },
+  { from: "user", text: "yeah", time: "14:23" },
   {
     from: "ai",
-    text: "Something a bit more private than last time",
-    time: "23:49",
+    text: "I added the two extras you mentioned before",
+    time: "14:23",
   },
-  { from: "user", text: "show me", time: "23:49" },
+  { from: "user", text: "nice. how much?", time: "14:24" },
   {
     from: "ai",
-    text: "Unlock it and I will 😉",
-    time: "23:50",
+    text: "$79 — returning-user rate",
+    time: "14:24",
+  },
+  {
+    from: "ai",
+    text: "Tap to unlock and I'll send it over",
+    time: "14:24",
     cta: true,
   },
 ];
@@ -44,43 +48,51 @@ type Step =
 const timeline: { step: Step; delay: number }[] = [
   { step: { kind: "msg", index: 0 }, delay: 400 },
   { step: { kind: "typing" }, delay: 500 },
-  { step: { kind: "msg", index: 1 }, delay: 1000 },
-  { step: { kind: "msg", index: 2 }, delay: 1200 },
+  { step: { kind: "msg", index: 1 }, delay: 900 },
+  { step: { kind: "msg", index: 2 }, delay: 1400 },
+  { step: { kind: "msg", index: 3 }, delay: 1200 },
   { step: { kind: "typing" }, delay: 600 },
-  { step: { kind: "msg", index: 3 }, delay: 1100 },
-  { step: { kind: "msg", index: 4 }, delay: 700 },
-  { step: { kind: "msg", index: 5 }, delay: 1500 },
+  { step: { kind: "msg", index: 4 }, delay: 1200 },
+  { step: { kind: "msg", index: 5 }, delay: 1300 },
   { step: { kind: "typing" }, delay: 600 },
-  { step: { kind: "msg", index: 6 }, delay: 1100 },
-  { step: { kind: "msg", index: 7 }, delay: 1400 },
-  { step: { kind: "typing" }, delay: 600 },
-  { step: { kind: "msg", index: 8 }, delay: 1100 },
+  { step: { kind: "msg", index: 6 }, delay: 1000 },
+  { step: { kind: "msg", index: 7 }, delay: 1200 },
   { step: { kind: "autoUnlock" }, delay: 2200 },
 ];
 
 type Signal = {
   label: string;
   value: string;
+  phase: "conversation" | "decision" | "unlock" | "payment";
   visibleAt: number;
   profit?: boolean;
   requiresUnlock?: boolean;
 };
 
 const signals: Signal[] = [
-  { label: "Returning User", value: "Yes", visibleAt: 2 },
-  { label: "Preference Match", value: "Confirmed", visibleAt: 5 },
-  { label: "Intent Level", value: "High", visibleAt: 8 },
-  { label: "Unlock Trigger", value: "Ready", visibleAt: 9 },
+  { label: "Returning User", value: "Yes", phase: "conversation", visibleAt: 1 },
+  { label: "Context Loaded", value: "Confirmed", phase: "conversation", visibleAt: 3 },
+  { label: "Intent", value: "High", phase: "decision", visibleAt: 4 },
+  { label: "Offer Match", value: "Confirmed", phase: "decision", visibleAt: 5 },
+  { label: "Unlock Trigger", value: "Ready", phase: "unlock", visibleAt: 8 },
   {
-    label: "Revenue Signal",
-    value: "+$180",
-    visibleAt: 9,
+    label: "Payment",
+    value: "+$79",
+    phase: "payment",
+    visibleAt: 8,
     profit: true,
     requiresUnlock: true,
   },
 ];
 
-export default function LiveDemo() {
+const phaseLabels = [
+  { key: "conversation", label: "Conversation" },
+  { key: "decision", label: "Decision" },
+  { key: "unlock", label: "Unlock" },
+  { key: "payment", label: "Payment" },
+] as const;
+
+export default function DemoConversation() {
   const [visibleCount, setVisibleCount] = useState(0);
   const [typing, setTyping] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
@@ -108,6 +120,23 @@ export default function LiveDemo() {
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  // Phase activation logic — drives the flow indicator at the top.
+  const activePhase: Signal["phase"] = unlocked
+    ? "payment"
+    : visibleCount >= 8
+      ? "unlock"
+      : visibleCount >= 4
+        ? "decision"
+        : "conversation";
+
+  const phaseOrder: Signal["phase"][] = [
+    "conversation",
+    "decision",
+    "unlock",
+    "payment",
+  ];
+  const activeIndex = phaseOrder.indexOf(activePhase);
+
   return (
     <section className="flex min-h-screen w-full items-center justify-center border-t border-white/5 bg-[#080808] px-6 pt-24 pb-24">
       <div className="flex w-full max-w-5xl flex-col items-center">
@@ -116,10 +145,74 @@ export default function LiveDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-12 text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl"
+          className="mb-4 text-center text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl"
         >
-          Live System
+          Live Flow
         </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+          className="mb-10 text-center text-sm text-zinc-500 sm:text-base"
+        >
+          Conversation → Decision → Unlock → Payment
+        </motion.p>
+
+        {/* Phase indicator */}
+        <div className="mb-10 flex w-full max-w-3xl items-center justify-between gap-2">
+          {phaseLabels.map((p, i) => {
+            const isActive = i <= activeIndex;
+            const isCurrent = i === activeIndex;
+            const isPayment = p.key === "payment";
+            return (
+              <div key={p.key} className="flex flex-1 items-center gap-2">
+                <div className="flex flex-col items-center gap-1.5">
+                  <motion.span
+                    animate={{
+                      scale: isCurrent ? [1, 1.25, 1] : 1,
+                      opacity: isActive ? 1 : 0.35,
+                    }}
+                    transition={{
+                      duration: 1.4,
+                      repeat: isCurrent ? Infinity : 0,
+                      ease: "easeInOut",
+                    }}
+                    className={`h-2 w-2 rounded-full ${
+                      isActive
+                        ? isPayment && unlocked
+                          ? "bg-emerald-400 shadow-[0_0_10px_rgb(34_197_94/0.8)]"
+                          : "bg-[#C9A84C] shadow-[0_0_10px_rgb(201_168_76/0.7)]"
+                        : "bg-zinc-700"
+                    }`}
+                  />
+                  <span
+                    className={`text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-500 ${
+                      isActive
+                        ? isPayment && unlocked
+                          ? "text-emerald-400"
+                          : "text-[#C9A84C]"
+                        : "text-zinc-600"
+                    }`}
+                  >
+                    {p.label}
+                  </span>
+                </div>
+                {i < phaseLabels.length - 1 && (
+                  <div className="relative mt-[-18px] h-px flex-1 bg-zinc-800">
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: i < activeIndex ? 1 : 0 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      className="absolute inset-0 origin-left bg-[#C9A84C]/60"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         <div className="flex w-full flex-col items-stretch gap-6 lg:flex-row lg:items-start">
           <div className="flex-1 overflow-hidden rounded-3xl border border-white/10 bg-[#0b141a] p-4 shadow-2xl shadow-black/50 md:p-6">
@@ -184,7 +277,7 @@ export default function LiveDemo() {
                           >
                             <span aria-hidden>{unlocked ? "✔" : "🔒"}</span>
                             <span>
-                              {unlocked ? "Unlocked — $180" : "Unlock"}
+                              {unlocked ? "Paid — $79" : "Unlock — $79"}
                             </span>
                           </motion.button>
                         )}
@@ -227,7 +320,7 @@ export default function LiveDemo() {
             </div>
           </div>
 
-          <aside className="flex w-full flex-col gap-2 lg:w-60 lg:flex-shrink-0">
+          <aside className="flex w-full flex-col gap-2 lg:w-64 lg:flex-shrink-0">
             <div className="mb-1 flex items-center gap-2 px-1">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#C9A84C]/80 shadow-[0_0_8px_rgb(201_168_76/0.7)]" />
               <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400">
@@ -278,30 +371,15 @@ export default function LiveDemo() {
           </aside>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.9, ease: "easeOut", delay: 0.1 }}
-          className="mt-16 flex w-full flex-col items-center"
+          transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
+          className="mt-12 max-w-xl text-center text-xs text-zinc-500 opacity-80 sm:text-sm"
         >
-          <span className="mb-4 text-xs uppercase tracking-[0.18em] text-zinc-500">
-            Revenue in production
-          </span>
-          <div className="relative w-full max-w-[900px] overflow-hidden rounded-2xl shadow-2xl shadow-black/70 ring-1 ring-white/10 drop-shadow-[0_0_60px_rgb(34_197_94/0.12)] sm:w-[92%]">
-            <Image
-              src="/anothermee-pitch/team/SALE-DASH.jpeg"
-              alt="AnotherMee live revenue dashboard"
-              width={1800}
-              height={1100}
-              sizes="(min-width: 1024px) 900px, 92vw"
-              className="h-auto w-full object-contain opacity-95"
-            />
-          </div>
-          <p className="mt-6 max-w-md text-center text-xs text-zinc-500 opacity-80 sm:text-sm">
-            Live transactions. Real users. Real revenue flow.
-          </p>
-        </motion.div>
+          Every message moves the user one step closer to a revenue event — and the system decides exactly when to ask.
+        </motion.p>
       </div>
     </section>
   );
