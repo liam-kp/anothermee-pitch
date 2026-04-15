@@ -7,7 +7,7 @@ const blocks = [
   { label: "User", sub: "Incoming intent" },
   {
     label: "Channels & Integrations",
-    sub: "WhatsApp · Telegram · CRM · API",
+    sub: "WhatsApp · Telegram · Slack · CRM · API",
   },
   {
     label: "AI Engine",
@@ -122,7 +122,7 @@ export default function SystemFlow() {
                       delay: i * 0.15 + 0.4,
                       ease: "easeOut",
                     }}
-                    className="mt-3 text-xs tracking-wide text-zinc-400"
+                    className="mt-3 block w-full text-center text-xs tracking-wide text-zinc-400"
                   >
                     {block.sub}
                   </motion.span>
