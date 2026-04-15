@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated pdf export
+/anothermee-deck.pdf
+
 # production
 /build
 

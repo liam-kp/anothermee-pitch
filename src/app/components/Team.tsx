@@ -24,7 +24,7 @@ const team: Member[] = [
   },
   {
     name: "Dvir Pinchevsky",
-    role: "AI Systems",
+    role: "CAIO — Chief AI Officer",
     hook: "Conversation intelligence",
     description: "Builds high-conversion conversation intelligence.",
     credibility: "Stress-tested 20+ LLMs for conversion",
