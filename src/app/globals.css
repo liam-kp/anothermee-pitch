@@ -3,11 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --accent: 212 175 55;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: rgb(var(--accent));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -19,8 +21,36 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
+  background-color: black;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-glow-accent {
+    text-shadow:
+      0 0 32px rgb(var(--accent) / 0.28),
+      0 0 72px rgb(var(--accent) / 0.12);
+  }
+
+  .shadow-glow-accent {
+    box-shadow:
+      0 0 0 1px rgb(var(--accent) / 0.3),
+      0 0 36px -10px rgb(var(--accent) / 0.3);
+  }
+
+  .shadow-glow-accent-strong {
+    box-shadow:
+      0 0 0 1px rgb(var(--accent) / 0.5),
+      0 0 48px -8px rgb(var(--accent) / 0.4);
+  }
+
+  .shadow-glow-emerald {
+    box-shadow: 0 0 24px -4px rgb(16 185 129 / 0.55);
+  }
 }
