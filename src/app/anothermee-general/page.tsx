@@ -1,4 +1,5 @@
 import HeroHook from "../components/v2/HeroHook";
+import Vision from "../components/Vision";
 import HeroPitch from "../components/v2/HeroPitch";
 import SystemFlow from "../components/v2/SystemFlow";
 import WhyItWins from "../components/v2/WhyItWins";
@@ -14,6 +15,7 @@ export default function AnotherMeeGeneralPage() {
   return (
     <>
       <HeroHook />
+      <Vision />
       <HeroPitch />
       <SystemFlow />
       <WhyItWins />
